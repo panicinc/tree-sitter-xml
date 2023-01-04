@@ -1,0 +1,117 @@
+===================================
+Tags
+===================================
+<foo>Hello</foo>
+---
+
+(fragment
+  (element
+    (start_tag (tag_name))
+    (text)
+    (end_tag (tag_name))))
+
+===================================
+Tags with attributes
+===================================
+<foo value="yes" data-💩="bar"></foo>
+---
+
+(fragment
+  (element
+    (start_tag
+      (tag_name)
+      (attribute
+        (attribute_name)
+        (quoted_attribute_value (attribute_value)))
+      (attribute
+        (attribute_name)
+        (quoted_attribute_value (attribute_value)))
+    (end_tag (tag_name))))
+
+===================================
+Nested tags
+===================================
+<foo>
+  <bar>a</bar>
+  b
+  <baz>c</baz>
+  Multi-line
+  text
+</foo>
+---
+
+(fragment
+  (element
+    (start_tag (tag_name))
+    (element
+      (start_tag (tag_name))
+      (text)
+      (end_tag (tag_name)))
+    (text)
+    (element
+      (start_tag (tag_name))
+      (text)
+      (end_tag (tag_name)))
+    (text)
+    (end_tag (tag_name))))
+
+==================================
+Namespaced tags
+==================================
+<something:different>
+  <text-editor mini="foo">
+    Hello
+  </text-editor>
+</something:different>
+---
+
+(fragment
+  (element
+    (start_tag (tag_name))
+    (element
+      (start_tag (tag_name) (attribute (attribute_name) (quoted_attribute_value (attribute_value))))
+      (text)
+      (end_tag (tag_name)))
+    (end_tag (tag_name))))
+
+==================================
+Comments
+==================================
+<!-- hello -->
+<!-- world ->-> -- > ->->->-- -> still comment -->
+<div>
+  <!-- <span>something</span> -->
+</div>
+---
+
+(fragment
+  (comment)
+  (comment)
+  (element
+    (start_tag (tag_name))
+    (comment)
+    (end_tag (tag_name))))
+
+==================================
+Raw text elements
+==================================
+<![CDATA[
+]]>
+
+---
+
+(fragment
+  (cdata
+    (cdata_start)
+    (raw_text)
+    (cdata_end)))
+
+==================================
+Prolog
+==================================
+<?xml version="1.0">
+---
+
+(fragment
+  (prolog))
+
