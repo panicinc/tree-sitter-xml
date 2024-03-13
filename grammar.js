@@ -28,9 +28,19 @@ module.exports = grammar({
       /[^>]+/,
       '>'
     ),
+    
+    doctype: $ => seq(
+      '<!',
+      alias($._doctype, 'doctype'),
+      /[^>]+/,
+      '>'
+    ),
+    
+    _doctype: $ => /[Dd][Oo][Cc][Tt][Yy][Pp][Ee]/,
 
     _node: $ => choice(
       $.prolog,
+      $.doctype,
       $.entity,
       $.text,
       $.element,

@@ -29,12 +29,46 @@
         }
       ]
     },
+    "doctype": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "<!"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_doctype"
+          },
+          "named": false,
+          "value": "doctype"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[^>]+"
+        },
+        {
+          "type": "STRING",
+          "value": ">"
+        }
+      ]
+    },
+    "_doctype": {
+      "type": "PATTERN",
+      "value": "[Dd][Oo][Cc][Tt][Yy][Pp][Ee]"
+    },
     "_node": {
       "type": "CHOICE",
       "members": [
         {
           "type": "SYMBOL",
           "name": "prolog"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "doctype"
         },
         {
           "type": "SYMBOL",
