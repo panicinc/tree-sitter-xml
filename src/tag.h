@@ -1,32 +1,39 @@
-#include <string>
-#include <map>
+#include "tree_sitter/parser.h"
+#include "tree_sitter/array.h"
+#include <string.h>
 
-using std::string;
-using std::map;
+typedef Array(char) String;
 
-struct Tag {
-  // For some reason, Tag will not necessarily be aligned properly when stored in vector<Tag>
-  // unless it's forced to align by adding an alignable type to the start of the struct.
-  // This might be an optimization on structs with single members, but to "fix" it there's just an integer here.
-  uint8_t _unused;
-  
-  string name;
+typedef struct {
+    String tag_name;
+} Tag;
 
-  // This default constructor is used in the case where there is not enough space
-  // in the serialization buffer to store all of the tags. In that case, tags
-  // that cannot be serialized will be treated as having an unknown type. These
-  // tags will be closed via implicit end tags regardless of the next closing
-  // tag is encountered.
-  Tag() : _unused(0) {}
+static inline Tag tag_new() {
+    Tag tag;
+    tag.tag_name = (String) array_new();
+    return tag;
+}
 
-  Tag(const string &name) : _unused(0), name(name) {}
+static inline Tag tag_for_name(String name) {
+    Tag tag = tag_new();
+    tag.tag_name = name;
+    return tag;
+}
 
-  bool operator==(const Tag &other) const {
-    if (name != other.name) return false;
+static inline void tag_free(Tag *tag) {
+    array_delete(&tag->tag_name);
+}
+
+static inline bool tag_eq(const Tag *self, const Tag *other) {
+    if (self->tag_name.size != other->tag_name.size) {
+        return false;
+    }
+    if (memcmp(
+        self->tag_name.contents,
+        other->tag_name.contents,
+        self->tag_name.size
+    ) != 0) {
+        return false;
+    }
     return true;
-  }
-
-  static inline Tag for_name(const string &name) {
-    return Tag(name);
-  }
-};
+}

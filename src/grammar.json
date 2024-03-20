@@ -330,38 +330,40 @@
         }
       ]
     },
+    "entity": {
+      "type": "PATTERN",
+      "value": "&(#([xX][0-9a-fA-F]{1,6}|[0-9]{1,5})|[A-Za-z]{1,30});?"
+    },
     "cdata": {
       "type": "SEQ",
       "members": [
         {
-          "type": "ALIAS",
-          "content": {
-            "type": "STRING",
-            "value": "<![CDATA["
-          },
-          "named": true,
-          "value": "cdata_start"
+          "type": "STRING",
+          "value": "<!["
         },
         {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "raw_text"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
+          "type": "STRING",
+          "value": "CDATA"
+        },
+        {
+          "type": "STRING",
+          "value": "["
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "cdata_text"
+          }
         },
         {
           "type": "ALIAS",
           "content": {
-            "type": "STRING",
-            "value": "]]>"
+            "type": "SYMBOL",
+            "name": "_cdata_end_delimiter"
           },
-          "named": true,
-          "value": "cdata_end"
+          "named": false,
+          "value": "]]>"
         }
       ]
     },
@@ -405,19 +407,11 @@
     },
     {
       "type": "SYMBOL",
-      "name": "entity"
-    },
-    {
-      "type": "STRING",
-      "value": "<![CDATA["
-    },
-    {
-      "type": "STRING",
-      "value": "]]>"
+      "name": "cdata_text"
     },
     {
       "type": "SYMBOL",
-      "name": "raw_text"
+      "name": "_cdata_end_delimiter"
     },
     {
       "type": "SYMBOL",
@@ -427,4 +421,3 @@
   "inline": [],
   "supertypes": []
 }
-

@@ -12,10 +12,8 @@ module.exports = grammar({
     $.erroneous_end_tag_name,
     '/>',
     $._implicit_end_tag,
-    $.entity,
-    '<![CDATA[',
-    ']]>',
-    $.raw_text,
+    $.cdata_text,
+    $._cdata_end_delimiter,
     $.comment,
   ],
 
@@ -28,14 +26,14 @@ module.exports = grammar({
       /[^>]+/,
       '>'
     ),
-    
+
     doctype: $ => seq(
       '<!',
       alias($._doctype, 'doctype'),
       /[^>]+/,
       '>'
     ),
-    
+
     _doctype: $ => /[Dd][Oo][Cc][Tt][Yy][Pp][Ee]/,
 
     _node: $ => choice(
@@ -99,13 +97,20 @@ module.exports = grammar({
       seq("'", optional(alias(/[^']+/, $.attribute_value)), "'"),
       seq('"', optional(alias(/[^"]+/, $.attribute_value)), '"')
     ),
-    
+
+    // An entity can be named, numeric (decimal), or numeric (hexadecimal). The
+    // longest entity name is 29 characters long, and the XML/HTML specs say that
+    // no more will ever be added.
+    entity: _ => /&(#([xX][0-9a-fA-F]{1,6}|[0-9]{1,5})|[A-Za-z]{1,30});?/,
+
     cdata: $ => seq(
-      alias('<![CDATA[', $.cdata_start),
-      optional($.raw_text),
-      alias(']]>', $.cdata_end)
+      '<![',
+      'CDATA',
+      '[',
+      repeat($.cdata_text),
+      alias($._cdata_end_delimiter, ']]>')
     ),
 
-    text: $ => /[^<>&\s]([^<>&]*[^<>&\s])?/
+    text: _ => /[^<>&\s]([^<>&]*[^<>&\s])?/
   }
 });
