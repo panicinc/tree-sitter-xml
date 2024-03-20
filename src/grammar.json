@@ -1,7 +1,7 @@
 {
   "name": "xml",
   "rules": {
-    "fragment": {
+    "document": {
       "type": "REPEAT",
       "content": {
         "type": "SYMBOL",
@@ -338,16 +338,8 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "STRING",
-          "value": "<!["
-        },
-        {
-          "type": "STRING",
-          "value": "CDATA"
-        },
-        {
-          "type": "STRING",
-          "value": "["
+          "type": "SYMBOL",
+          "name": "cdata_start"
         },
         {
           "type": "REPEAT",
@@ -357,15 +349,37 @@
           }
         },
         {
-          "type": "ALIAS",
-          "content": {
-            "type": "SYMBOL",
-            "name": "_cdata_end_delimiter"
-          },
-          "named": false,
-          "value": "]]>"
+          "type": "SYMBOL",
+          "name": "cdata_end"
         }
       ]
+    },
+    "cdata_start": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "<!["
+        },
+        {
+          "type": "IMMEDIATE_TOKEN",
+          "content": {
+            "type": "STRING",
+            "value": "CDATA"
+          }
+        },
+        {
+          "type": "IMMEDIATE_TOKEN",
+          "content": {
+            "type": "STRING",
+            "value": "["
+          }
+        }
+      ]
+    },
+    "cdata_end": {
+      "type": "STRING",
+      "value": "]]>"
     },
     "text": {
       "type": "PATTERN",
@@ -410,12 +424,16 @@
       "name": "cdata_text"
     },
     {
-      "type": "SYMBOL",
-      "name": "_cdata_end_delimiter"
+      "type": "STRING",
+      "value": "]]>"
     },
     {
       "type": "SYMBOL",
       "name": "comment"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_error_sentinel"
     }
   ],
   "inline": [],

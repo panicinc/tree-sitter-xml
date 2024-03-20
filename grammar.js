@@ -1,3 +1,15 @@
+/**
+ * @file XML grammar for tree-sitter
+ * @author Logan Collins
+ * @license MIT
+ */
+
+ /* eslint-disable arrow-parens */
+ /* eslint-disable camelcase */
+ /* eslint-disable-next-line spaced-comment */
+ /// <reference types="tree-sitter-cli/dsl" />
+ // @ts-check
+
 module.exports = grammar({
   name: 'xml',
 
@@ -13,12 +25,13 @@ module.exports = grammar({
     '/>',
     $._implicit_end_tag,
     $.cdata_text,
-    $._cdata_end_delimiter,
+    ']]>',
     $.comment,
+    $._error_sentinel,
   ],
 
   rules: {
-    fragment: $ => repeat($._node),
+    document: $ => repeat($._node),
 
     prolog: $ => seq(
       '<?',
@@ -34,7 +47,7 @@ module.exports = grammar({
       '>'
     ),
 
-    _doctype: $ => /[Dd][Oo][Cc][Tt][Yy][Pp][Ee]/,
+    _doctype: _ => /[Dd][Oo][Cc][Tt][Yy][Pp][Ee]/,
 
     _node: $ => choice(
       $.prolog,
@@ -89,9 +102,9 @@ module.exports = grammar({
       ))
     ),
 
-    attribute_name: $ => /[^<>"'/=\s]+/,
+    attribute_name: _ => /[^<>"'/=\s]+/,
 
-    attribute_value: $ => /[^<>"'=\s]+/,
+    attribute_value: _ => /[^<>"'=\s]+/,
 
     quoted_attribute_value: $ => choice(
       seq("'", optional(alias(/[^']+/, $.attribute_value)), "'"),
@@ -104,12 +117,18 @@ module.exports = grammar({
     entity: _ => /&(#([xX][0-9a-fA-F]{1,6}|[0-9]{1,5})|[A-Za-z]{1,30});?/,
 
     cdata: $ => seq(
-      '<![',
-      'CDATA',
-      '[',
+      $.cdata_start,
       repeat($.cdata_text),
-      alias($._cdata_end_delimiter, ']]>')
+      $.cdata_end
     ),
+
+    cdata_start: _ => seq(
+      '<![',
+      token.immediate('CDATA'),
+      token.immediate('[')
+    ),
+
+    cdata_end: _ => ']]>',
 
     text: _ => /[^<>&\s]([^<>&]*[^<>&\s])?/
   }

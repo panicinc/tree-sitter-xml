@@ -10,7 +10,8 @@ enum TokenType {
   IMPLICIT_END_TAG,
   CDATA_TEXT,
   CDATA_END_DELIMITER,
-  COMMENT
+  COMMENT,
+  ERROR_SENTINEL
 };
 
 typedef struct {
@@ -237,12 +238,12 @@ static bool scan_self_closing_tag_delimiter(Scanner *scanner, TSLexer *lexer) {
 }
 
 static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols) {
-    if (valid_symbols[CDATA_TEXT] || valid_symbols[CDATA_END_DELIMITER]) {
+    if ((valid_symbols[CDATA_TEXT] || valid_symbols[CDATA_END_DELIMITER]) && !valid_symbols[ERROR_SENTINEL]) {
         if (valid_symbols[CDATA_TEXT] && scan_cdata_text(lexer)) {
             return true;
         }
 
-        if (valid_symbols[CDATA_END_DELIMITER] && lexer->lookahead == ']') {
+        if (lexer->lookahead == ']') {
             advance(lexer);
             lexer->mark_end(lexer);
 
