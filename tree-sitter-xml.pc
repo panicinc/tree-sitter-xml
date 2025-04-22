@@ -1,0 +1,10 @@
+prefix=/Users/logan/Developer/Tree-sitter/ParserCompile/build/artifacts/tree-sitter-xml/macOS/x86_64
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: tree-sitter-xml
+Description: 
+URL: https://github.com/panicinc/tree-sitter-xml
+Version: 0.1.0
+Libs: -L${libdir} -ltree-sitter-xml
+Cflags: -I${includedir}

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/config.schema.json",
+  "grammars": [
+    {
+      "name": "xml",
+      "camelcase": "XML",
+      "title": "XML",
+      "scope": "source.xml",
+      "file-types": [
+        "xml"
+      ],
+      "injection-regex": "^xml$",
+      "class-name": "TreeSitterXml"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "license": "MIT",
+    "description": "The eXtensible Markup Language.",
+    "authors": [
+      {
+        "name": "Panic Inc",
+        "email": "logan@panic.com",
+        "url": "https://panic.com/"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/panicinc/tree-sitter-xml"
+    }
+  },
+  "bindings": {
+    "c": true,
+    "go": true,
+    "node": true,
+    "python": true,
+    "rust": true,
+    "swift": true,
+    "zig": false
+  }
+}
