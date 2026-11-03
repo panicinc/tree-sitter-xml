@@ -1,0 +1,30 @@
+
+===================================
+Unicode mixed-script tag names
+===================================
+<π_中文_привет title="x"><中文_π_привет/></π_中文_привет>
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name)
+      (attribute
+        (attribute_name)
+        (quoted_attribute_value (attribute_value))))
+    (element
+      (self_closing_tag (tag_name)))
+    (end_tag (tag_name))))
+
+===================================
+Unicode combining and supplementary tag names
+===================================
+<é·𐀀><𐀀/></é·𐀀>
+---
+
+(document
+  (element
+    (start_tag (tag_name))
+    (element
+      (self_closing_tag (tag_name)))
+    (end_tag (tag_name))))
