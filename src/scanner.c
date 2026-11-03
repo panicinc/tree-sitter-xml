@@ -88,12 +88,21 @@ static void deserialize(Scanner *scanner, const char *buffer, unsigned length) {
     }
 }
 
+// XML 1.0 NameChar ranges, independent of the C library locale tables.
+static bool is_name_char(int32_t c) {
+    if (c < 0x80) {
+        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')
+            || c == '-' || c == ':' || c == '_';
+    }
+    return c == 0xB7 || (c >= 0xC0 && c <= 0xD6) || (c >= 0xD8 && c <= 0xF6) || (c >= 0xF8 && c <= 0x37D)
+        || (c >= 0x37F && c <= 0x1FFF) || c == 0x200C || c == 0x200D || c == 0x203F || c == 0x2040
+        || (c >= 0x2070 && c <= 0x218F) || (c >= 0x2C00 && c <= 0x2FEF) || (c >= 0x3001 && c <= 0xD7FF)
+        || (c >= 0xF900 && c <= 0xFDCF) || (c >= 0xFDF0 && c <= 0xFFFD) || (c >= 0x10000 && c <= 0xEFFFF);
+}
+
 static String scan_tag_name(TSLexer *lexer) {
     String tag_name = array_new();
-    while (iswalnum(lexer->lookahead)
-           || lexer->lookahead == '-'
-           || lexer->lookahead == ':'
-           || lexer->lookahead == '_') {
+    while (is_name_char(lexer->lookahead)) {
         array_push(&tag_name, towupper(lexer->lookahead));
         advance(lexer);
     }
